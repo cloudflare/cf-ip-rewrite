@@ -1,5 +1,5 @@
 {
-    "name": "cloudflare/php-ip-rewrite",
+    "name": "cloudflare/cf-ip-rewrite",
     "description": "Library to rewrite CloudFlare IP Addresses to the end-user IP address",
     "keywords": [
         "ip rewrite",
