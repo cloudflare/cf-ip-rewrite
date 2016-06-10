@@ -26,6 +26,7 @@ class IpRewrite
         '162.158.0.0/15',
         '104.16.0.0/12',
         '172.64.0.0/13',
+        '131.0.72.0/22',
     );
 
     protected static $cf_ipv6 = array(
