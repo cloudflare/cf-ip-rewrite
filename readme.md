@@ -30,9 +30,12 @@ This module comes with a set of tests that can be run using phpunit. To run the 
 
 #### Basic Tests
 
-    phpunit -c phpunit.xml.dist
+    composer test
     
 #### With code coverage report in `coverage` folder
 
-    phpunit -c phpunit.xml.dist --coverage-html coverage
+    vendor/bin/phpunit -c phpunit.xml.dist --coverage-html coverage
 
+## Formating Code
+
+	composer format
