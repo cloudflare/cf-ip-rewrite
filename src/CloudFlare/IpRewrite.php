@@ -2,12 +2,15 @@
 
 namespace CloudFlare;
 
+require_once 'vendor/autoload.php';
+
 class IpRewrite
 {
     protected static $is_cf = null;
     protected static $original_ip = false;
     protected static $rewritten_ip = false;
 
+    // Found at https://www.cloudflare.com/ips/
     protected static $cf_ipv4 = array(
         '199.27.128.0/21',
         '173.245.48.0/20',
@@ -85,10 +88,9 @@ class IpRewrite
 
         // Process original_ip if on cloudflare
         if (self::$is_cf && self::$original_ip) {
-            // Check whether it's ipv4 or ipv6
-            $ip_ranges = self::$cf_ipv6;
-            if (strpos(self::$original_ip, ':') === false) {
-                $ip_ranges = self::$cf_ipv4;
+            $ip_ranges = self::$cf_ipv4;
+            if (IpUtils::isIpv6(self::$original_ip)) {
+                $ip_ranges = self::$cf_ipv6;
             }
 
             foreach ($ip_ranges as $range) {
