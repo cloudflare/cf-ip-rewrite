@@ -86,7 +86,7 @@ class IpRewrite
 
         // Store original remote address in $original_ip
         self::$original_ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
-
+        
         // Process original_ip if on cloudflare
         if (self::$is_cf && self::$original_ip) {
             $ip_ranges = self::$cf_ipv4;
