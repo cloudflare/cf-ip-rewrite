@@ -6,9 +6,9 @@ require_once 'vendor/autoload.php';
 
 class IpRewrite
 {
-    protected static $is_cf = null;
-    protected static $original_ip = false;
-    protected static $rewritten_ip = false;
+    protected static $is_loaded = false;
+    protected static $original_ip = null;
+    protected static $rewritten_ip = null;
 
     // Found at https://www.cloudflare.com/ips/
     protected static $cf_ipv4 = array(
@@ -37,36 +37,41 @@ class IpRewrite
         '2405:8100::/32',
     );
 
+    // Helper method for testing, should not be used in production
+    public static function reset()
+    {
+        self::$is_loaded = false;
+        self::$original_ip = null;
+        self::$rewritten_ip = null;
+    }
+
     // Returns boolean
     public static function isCloudFlare()
     {
-        self::rewrite();
+        if (!isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            return false;
+        }
 
-        return self::$is_cf;
+        return true;
     }
 
-    // Returns IP Address or false on error
+    // Returns IP Address or null on error
+    public static function getOriginalIP()
+    {
+        // If $original_ip is not set, return the REMOTE_ADDR
+        if (!isset(self::$original_ip)) {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+
+        return self::$original_ip;
+    }
+
+    // Returns IP Address or null on error
     public static function getRewrittenIP()
     {
         self::rewrite();
 
         return self::$rewritten_ip;
-    }
-
-    // Returns IP Address or false on error
-    public static function getOriginalIP()
-    {
-        self::rewrite();
-
-        return self::$original_ip;
-    }
-
-    // Helper method for testing, should not be used in production
-    public static function reset()
-    {
-        self::$is_cf = null;
-        self::$original_ip = false;
-        self::$rewritten_ip = false;
     }
 
     /*
@@ -77,28 +82,32 @@ class IpRewrite
     protected static function rewrite()
     {
         // only should be run once per page load
-        if (self::$is_cf !== null) {
+        if (self::$is_loaded) {
+            return;
+        }
+        self::$is_loaded = true;
+
+        $is_cf = self::isCloudFlare();
+        if (!$is_cf) {
             return;
         }
 
-        // Set this based on the presence of the header, so it is true even if IP has already been rewritten
-        self::$is_cf = isset($_SERVER['HTTP_CF_CONNECTING_IP']) ? true : false;
-
         // Store original remote address in $original_ip
-        self::$original_ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : false;
-        
-        // Process original_ip if on cloudflare
-        if (self::$is_cf && self::$original_ip) {
-            $ip_ranges = self::$cf_ipv4;
-            if (IpUtils::isIpv6(self::$original_ip)) {
-                $ip_ranges = self::$cf_ipv6;
-            }
+        if (!isset($_SERVER['REMOTE_ADDR'])) {
+            return;
+        }
+        self::$original_ip = $_SERVER['REMOTE_ADDR'];
 
-            foreach ($ip_ranges as $range) {
-                if (IpUtils::checkIp(self::$original_ip, $range)) {
-                    self::$rewritten_ip = $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
-                    break;
-                }
+        // Process original_ip if on cloudflare
+        $ip_ranges = self::$cf_ipv4;
+        if (IpUtils::isIpv6(self::$original_ip)) {
+            $ip_ranges = self::$cf_ipv6;
+        }
+
+        foreach ($ip_ranges as $range) {
+            if (IpUtils::checkIp(self::$original_ip, $range)) {
+                self::$rewritten_ip = $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+                break;
             }
         }
     }
