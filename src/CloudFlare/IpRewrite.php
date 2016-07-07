@@ -37,14 +37,6 @@ class IpRewrite
         '2405:8100::/32',
     );
 
-    // Helper method for testing, should not be used in production
-    public static function reset()
-    {
-        self::$is_loaded = false;
-        self::$original_ip = null;
-        self::$rewritten_ip = null;
-    }
-
     // Returns boolean
     public static function isCloudFlare()
     {

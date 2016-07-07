@@ -2,11 +2,22 @@
 
 use CloudFlare\IpRewrite;
 
-class Rewrite_Test extends PHPUnit_Framework_TestCase
+// Helper class for testing
+class IpRewriteTest extends IpRewrite
+{
+    public static function reset()
+    {
+        self::$is_loaded = false;
+        self::$original_ip = null;
+        self::$rewritten_ip = null;
+    }
+}
+
+class RewriteTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        IpRewrite::reset();
+        IpRewriteTest::reset();
     }
 
     public function tearDown()
