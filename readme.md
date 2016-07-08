@@ -6,38 +6,46 @@ For those cases, where the IP can not be guaranteed to be rewritten by one of th
 
 ### How it works
     
-    $is_cf = CloudFlare\IpRewrite::isCloudFlare();
-    $rewritten_ip = CloudFlare\IpRewrite::getRewrittenIP();
-    $original_ip = CloudFlare\IpRewrite::getOriginalIP();
+    $ipRewrite = CloudFlare\IpRewrite();
+
+    $is_cf = $ipRewrite->isCloudFlare();
+    $rewritten_ip = $ipRewrite->getRewrittenIP();
+    $original_ip = $ipRewrite->getOriginalIP();
     
-The class exposes three methods for interaction. Calling `getRewrittenIP()` will try to rewrite the IP. If the IP is rewritten, `$_SERVER["REMOTE_ADDR"]` will be updated to reflect the end-user's IP address.
+The class exposes three methods for interaction and a constructor. 
 
-`CloudFlare\IpRewrite::isCloudFlare();` returns `true` if the `CF_CONNECTING_IP` header is present in the request.
+Initializing `IpRewrite()` object will try to rewrite the IP. If the IP is rewritten, `$_SERVER["REMOTE_ADDR"]` will be updated to reflect the end-user's IP address.
 
-`CloudFlare\IpRewrite::getRewrittenIP()` triggers rewrite action. Without triggering rewrite action no rewrite will happen. Returns the rewritten ip address if a rewrite occurs, otherwise it will return `null`. 
+`isCloudFlare();` returns `true` if the `CF_CONNECTING_IP` header is present in the request.
 
-`CloudFlare\IpRewrite::getOriginalIP()` returns the original ip address from `$_SERVER["REMOTE_ADDR"]`. Must be called after rewrite action is triggered. 
+`getRewrittenIP()` Returns the rewritten ip address if a rewrite occurs, otherwise it will return `null`. 
 
-### How to use
+`getOriginalIP()` returns the saved original ip address from `$_SERVER["REMOTE_ADDR"]`.
+
+### Best Pratice
 
 ```
-
-    if (CloudFlare\IpRewrite::isCloudFlare()) {
-        // First call getRewrittenIP() to trigger the rewrite action.
-        $rewritten_ip = CloudFlare\IpRewrite::getRewrittenIP();
-        if (!isset($rewritten_ip)) {
-            // Something wrong happend. Rewrite was not successful.
-
-        }
-
-        // Get original ip after rewrite action
-        $original_ip = CloudFlare\IpRewrite::getOriginalIP();
+    // Initialize object to rewrite the headers
+    $ipRewrite = CloudFlare\IpRewrite();
+    
+    // Check if the request is from Cloudflare
+    $is_cf = $ipRewrite->isCloudFlare();
+    if ($is_cf) {
+        // Get original or rewritten ip
+        // Order does not matter
+        ...
+        $rewritten_ip = $ipRewrite->getRewrittenIP();
+        ...
+        $original_ip = $ipRewrite->getOriginalIP();
+        ...
     }
 
 ```
 
 #### Caution
-`getRewrittenIP()` triggers rewrite action only once per lifetime. If it's called multiple times it'll return the first result regardless if a change happend after the first call. Since rewrite action was not triggered `getOriginalIP()` will return the first the original ip.
+ Rewrite action is triggered only once in constructor. If `getRewrittenIP()` or `getOriginalIP()` is called multiple times it'll return the first result regardless if a change happend after the first call. Since rewrite action was not triggered. 
+
+ To get the newest changes a new `IpRewrite` object should be used.
 
 ### Testing this module
 
