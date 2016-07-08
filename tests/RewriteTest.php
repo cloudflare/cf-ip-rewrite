@@ -2,23 +2,9 @@
 
 use CloudFlare\IpRewrite;
 
-// Helper class for testing
-class IpRewriteTest extends IpRewrite
+class RewriteTest extends \PHPUnit_Framework_TestCase
 {
-    public static function reset()
-    {
-        self::$is_loaded = false;
-        self::$original_ip = null;
-        self::$rewritten_ip = null;
-    }
-}
-
-class RewriteTest extends PHPUnit_Framework_TestCase
-{
-    public function setUp()
-    {
-        IpRewriteTest::reset();
-    }
+    private $ipRewrite = null;
 
     public function tearDown()
     {
@@ -34,9 +20,11 @@ class RewriteTest extends PHPUnit_Framework_TestCase
         $_SERVER['REMOTE_ADDR'] = $remote_addr;
         $_SERVER['HTTP_CF_CONNECTING_IP'] = $connecting_ip;
 
-        $this->assertTrue(IpRewrite::isCloudFlare());
-        $this->assertEquals(IpRewrite::getRewrittenIP(), $connecting_ip);
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 
     public function testOffCloudFlareIPv4()
@@ -45,9 +33,11 @@ class RewriteTest extends PHPUnit_Framework_TestCase
 
         $_SERVER['REMOTE_ADDR'] = $remote_addr;
 
-        $this->assertFalse(IpRewrite::isCloudFlare());
-        $this->assertNull(IpRewrite::getRewrittenIP());
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertFalse($this->ipRewrite->isCloudFlare());
+        $this->assertNull($this->ipRewrite->getRewrittenIP());
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 
     public function testOffCloudFlareIPv4FakeModCloudflare()
@@ -58,9 +48,11 @@ class RewriteTest extends PHPUnit_Framework_TestCase
         $_SERVER['REMOTE_ADDR'] = $remote_addr;
         $_SERVER['HTTP_CF_CONNECTING_IP'] = $connecting_ip;
 
-        $this->assertTrue(IpRewrite::isCloudFlare());
-        $this->assertNull(IpRewrite::getRewrittenIP());
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertNull($this->ipRewrite->getRewrittenIP());
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 
     public function testOnlyProcessOnce()
@@ -71,9 +63,11 @@ class RewriteTest extends PHPUnit_Framework_TestCase
         $_SERVER['REMOTE_ADDR'] = $remote_addr;
         $_SERVER['HTTP_CF_CONNECTING_IP'] = $connecting_ip;
 
-        $this->assertTrue(IpRewrite::isCloudFlare());
-        $this->assertEquals(IpRewrite::getRewrittenIP(), $connecting_ip);
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
 
         // swap values and expect the original still, since it only allows one run per load
         $remote_addr2 = '103.21.244.2';
@@ -82,9 +76,9 @@ class RewriteTest extends PHPUnit_Framework_TestCase
         $_SERVER['REMOTE_ADDR'] = $remote_addr2;
         $_SERVER['HTTP_CF_CONNECTING_IP'] = $connecting_ip2;
 
-        $this->assertTrue(IpRewrite::isCloudFlare());
-        $this->assertEquals(IpRewrite::getRewrittenIP(), $connecting_ip);
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 
     public function testOnCloudFlareIPv6()
@@ -95,9 +89,11 @@ class RewriteTest extends PHPUnit_Framework_TestCase
         $_SERVER['REMOTE_ADDR'] = $remote_addr;
         $_SERVER['HTTP_CF_CONNECTING_IP'] = $connecting_ip;
 
-        $this->assertTrue(IpRewrite::isCloudFlare());
-        $this->assertEquals(IpRewrite::getRewrittenIP(), $connecting_ip);
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 
     public function testOffCloudFlareIPv6()
@@ -106,8 +102,10 @@ class RewriteTest extends PHPUnit_Framework_TestCase
 
         $_SERVER['REMOTE_ADDR'] = $remote_addr;
 
-        $this->assertFalse(IpRewrite::isCloudFlare());
-        $this->assertNull(IpRewrite::getRewrittenIP());
-        $this->assertEquals(IpRewrite::getOriginalIP(), $remote_addr);
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertFalse($this->ipRewrite->isCloudFlare());
+        $this->assertNull($this->ipRewrite->getRewrittenIP());
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 }
