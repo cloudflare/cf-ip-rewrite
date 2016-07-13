@@ -2,8 +2,6 @@
 
 namespace CloudFlare;
 
-require_once 'vendor/autoload.php';
-
 class IpRewrite
 {
     private $is_loaded = false;
