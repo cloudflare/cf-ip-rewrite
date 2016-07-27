@@ -23,6 +23,7 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
         $this->ipRewrite = new IpRewrite();
 
         $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertTrue($this->ipRewrite->isCloudFlareIP());
         $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
@@ -36,6 +37,7 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
         $this->ipRewrite = new IpRewrite();
 
         $this->assertFalse($this->ipRewrite->isCloudFlare());
+        $this->assertFalse($this->ipRewrite->isCloudFlareIP());
         $this->assertNull($this->ipRewrite->getRewrittenIP());
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
@@ -50,7 +52,8 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
 
         $this->ipRewrite = new IpRewrite();
 
-        $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertFalse($this->ipRewrite->isCloudFlare());
+        $this->assertFalse($this->ipRewrite->isCloudFlareIP());
         $this->assertNull($this->ipRewrite->getRewrittenIP());
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
@@ -66,6 +69,7 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
         $this->ipRewrite = new IpRewrite();
 
         $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertTrue($this->ipRewrite->isCloudFlareIP());
         $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
 
@@ -92,6 +96,7 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
         $this->ipRewrite = new IpRewrite();
 
         $this->assertTrue($this->ipRewrite->isCloudFlare());
+        $this->assertTrue($this->ipRewrite->isCloudFlareIP());
         $this->assertEquals($this->ipRewrite->getRewrittenIP(), $connecting_ip);
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
@@ -104,6 +109,7 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
 
         $this->ipRewrite = new IpRewrite();
 
+        $this->assertFalse($this->ipRewrite->isCloudFlare());
         $this->assertFalse($this->ipRewrite->isCloudFlare());
         $this->assertNull($this->ipRewrite->getRewrittenIP());
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
