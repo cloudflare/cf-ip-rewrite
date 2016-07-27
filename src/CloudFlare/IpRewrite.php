@@ -50,14 +50,14 @@ class IpRewrite
             return false;
         }
 
-        return true;
+        return $this->isCloudFlareIP();
     }
 
     /**
      * Check if a request comes from a CloudFlare IP.
      * @return bool
      */
-    private function isCloudFlareIP()
+    public function isCloudFlareIP()
     {
         // Store original remote address in $original_ip
         $this->original_ip = $this->getOriginalIP();
@@ -122,12 +122,7 @@ class IpRewrite
             return false;
         }
 
-        if ($this->isCloudFlareIP() == true) {
-            $this->rewritten_ip = $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
-
-            return true;
-        }
-
-        return false;
+        $this->rewritten_ip = $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
+        return true;
     }
 }
