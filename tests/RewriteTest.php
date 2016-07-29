@@ -28,6 +28,21 @@ class RewriteTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
     }
 
+
+    public function testRequestFromCloudFlareNoConnectingIPHeader()
+    {
+        $remote_addr = '103.21.244.2';
+
+        $_SERVER['REMOTE_ADDR'] = $remote_addr;
+
+        $this->ipRewrite = new IpRewrite();
+
+        $this->assertFalse($this->ipRewrite->isCloudFlare());
+        $this->assertTrue($this->ipRewrite->isCloudFlareIP());
+        $this->assertNull($this->ipRewrite->getRewrittenIP());
+        $this->assertEquals($this->ipRewrite->getOriginalIP(), $remote_addr);
+    }
+
     public function testOffCloudFlareIPv4()
     {
         $remote_addr = '8.8.8.8';
