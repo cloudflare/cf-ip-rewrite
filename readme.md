@@ -18,8 +18,6 @@ Initializing `IpRewrite()` object will try to rewrite the IP. If the IP is rewri
 
 `isCloudFlare();` returns `true` if the `CF_CONNECTING_IP` header is present in the request and the request originates from a CloudFlare IP.
 
-`isCloudFlareIP();` returns `true` if the request originates from a CloudFlare IP Address.
-
 `getRewrittenIP()` Returns the rewritten ip address if a rewrite occurs, otherwise it will return `null`. 
 
 `getOriginalIP()` returns the saved original ip address from `$_SERVER["REMOTE_ADDR"]`.
