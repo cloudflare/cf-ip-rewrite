@@ -1,6 +1,6 @@
-# CloudFlare PHP IP Rewriting
+# Cloudflare PHP IP Rewriting
 
-This module makes it easy for developers to add rewrite CloudFlare IP Addresses for actual end-user IP Addresses at the application layer. It is recommended to either install mod_cloudflare for Apache or use nginx rewrite rules (<https://support.cloudflare.com/hc/en-us/articles/200170706-Does-CloudFlare-have-an-IP-module-for-Nginx->) if possible.
+This module makes it easy for developers to add rewrite Cloudflare IP Addresses for actual end-user IP Addresses at the application layer. It is recommended to either install mod_cloudflare for Apache or use nginx rewrite rules (<https://support.cloudflare.com/hc/en-us/articles/200170706-Does-CloudFlare-have-an-IP-module-for-Nginx->) if possible.
 
 For those cases, where the IP can not be guaranteed to be rewritten by one of these alternate means, this module can be used to rewrite the IP address.
 
@@ -18,7 +18,7 @@ The class exposes three methods for interaction and a constructor.
 
 Initializing `IpRewrite()` object will try to rewrite the IP. If the IP is rewritten, `$_SERVER["REMOTE_ADDR"]` will be updated to reflect the end-user's IP address.
 
-`isCloudFlare();` returns `true` if the `CF_CONNECTING_IP` header is present in the request and the request originates from a CloudFlare IP.
+`isCloudFlare();` returns `true` if the `CF_CONNECTING_IP` header is present in the request and the request originates from a Cloudflare IP.
 
 `getRewrittenIP()` Returns the rewritten ip address if a rewrite occurs, otherwise it will return `null`.
 
