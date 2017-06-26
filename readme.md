@@ -5,13 +5,11 @@ This module makes it easy for developers to add rewrite CloudFlare IP Addresses 
 For those cases, where the IP can not be guaranteed to be rewritten by one of these alternate means, this module can be used to rewrite the IP address.
 
 ### How it works
-    
-    $ipRewrite = CloudFlare\IpRewrite();
-
+    $ipRewrite = new CloudFlare\IpRewrite();
     $is_cf = $ipRewrite->isCloudFlare();
     $rewritten_ip = $ipRewrite->getRewrittenIP();
     $original_ip = $ipRewrite->getOriginalIP();
-    
+
 The class exposes three methods for interaction and a constructor. 
 
 Initializing `IpRewrite()` object will try to rewrite the IP. If the IP is rewritten, `$_SERVER["REMOTE_ADDR"]` will be updated to reflect the end-user's IP address.
@@ -26,7 +24,11 @@ Initializing `IpRewrite()` object will try to rewrite the IP. If the IP is rewri
 
 ```
     // Initialize object to rewrite the headers
-    $ipRewrite = CloudFlare\IpRewrite();
+    try {
+        $ipRewrite = new CloudFlare\IpRewrite();
+    } catch (RuntimeException $e) {
+        // PHP configurations doesn't support IPv6, an exception will be thrown
+    }
     
     // Check if the request is from Cloudflare
     $is_cf = $ipRewrite->isCloudFlare();
@@ -54,7 +56,7 @@ This module comes with a set of tests that can be run using phpunit. To run the 
 #### Basic Tests
 
     composer test
-    
+
 #### With code coverage report in `coverage` folder
 
     vendor/bin/phpunit -c phpunit.xml.dist --coverage-html coverage
