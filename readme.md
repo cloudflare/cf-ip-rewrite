@@ -21,7 +21,7 @@ Initializing `IpRewrite()` object will try to rewrite the IP. If the IP is rewri
 
 `getOriginalIP()` returns the saved original ip address from `$_SERVER["REMOTE_ADDR"]`.
 
-### Best Pratice
+### Best Practice
 
 ```php
     // Initialize object to rewrite the headers
